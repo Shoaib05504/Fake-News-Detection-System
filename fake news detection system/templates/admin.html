@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Fake News Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #6366f1;
+            margin: 0.5rem 0;
+            animation: countUp 1s ease;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .history-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #1e293b;
+            font-size: 1.8rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .history-table thead,
+        .history-table tbody,
+        .history-table tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .history-table thead {
+            width: calc(100% - 1em);
+        }
+
+        .history-table tbody {
+            display: block;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .history-table th {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            color: #1e293b;
+            border-bottom: 3px solid #6366f1;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            word-wrap: break-word;
+        }
+
+        .history-table tr:hover {
+            background: #f8fafc;
+            transition: background 0.2s ease;
+        }
+
+        .history-table th:nth-child(1),
+        .history-table td:nth-child(1) { width: 8%; }
+        
+        .history-table th:nth-child(2),
+        .history-table td:nth-child(2) { width: 40%; }
+        
+        .history-table th:nth-child(3),
+        .history-table td:nth-child(3) { width: 15%; }
+        
+        .history-table th:nth-child(4),
+        .history-table td:nth-child(4) { width: 15%; }
+        
+        .history-table th:nth-child(5),
+        .history-table td:nth-child(5) { width: 22%; }
+
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-fake {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+        }
+
+        .badge-real {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #059669;
+            border: 2px solid #059669;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+        }
+
+        .admin-export-btn {
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: white;
+            padding: 0.85rem 1.8rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .admin-export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+        }
+
+        .admin-export-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .text-preview {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #475569;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 0 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .history-section {
+                padding: 1rem;
+                overflow-x: auto;
+            }
+
+            .history-table {
+                font-size: 0.85rem;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .admin-export-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🔍 Fake News Detector</h1>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/admin" class="nav-link active">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">
+            📊 Admin Dashboard
+        </h1>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-label">Total Predictions</div>
+                <div class="stat-value" id="totalPredictions">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fake News Detected</div>
+                <div class="stat-value" id="fakeCount" style="color: #ef4444;">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Real News Detected</div>
+                <div class="stat-value" id="realCount" style="color: #10b981;">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Confidence</div>
+                <div class="stat-value" id="avgConfidence">-</div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="section-header">
+                <h2>📋 Recent Predictions History</h2>
+                <button class="admin-export-btn" onclick="exportAllData()">
+                    📥 Export All Data (CSV)
+                </button>
+            </div>
+
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Text Preview</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #64748b;">
+                            Loading data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/statistics');
+                const stats = await response.json();
+                
+                document.getElementById('totalPredictions').textContent = stats.total_predictions;
+                document.getElementById('fakeCount').textContent = stats.fake_count;
+                document.getElementById('realCount').textContent = stats.real_count;
+                document.getElementById('avgConfidence').textContent = stats.average_confidence + '%';
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Load history
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history?limit=50');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('historyTable');
+                
+                if (data.history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #64748b;">No predictions yet</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.history.map(item => `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td class="text-preview">${item.text_preview}...</td>
+                        <td>
+                            <span class="badge badge-${item.prediction.toLowerCase()}">
+                                ${item.prediction}
+                            </span>
+                        </td>
+                        <td>${item.confidence}%</td>
+                        <td>${new Date(item.timestamp).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading history:', error);
+                document.getElementById('historyTable').innerHTML = 
+                    '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #ef4444;">Error loading data</td></tr>';
+            }
+        }
+
+        // Export all data
+        async function exportAllData() {
+            window.location.href = '/api/export-all';
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatistics();
+            loadHistory();
+            
+            // Refresh every 30 seconds
+            setInterval(() => {
+                loadStatistics();
+                loadHistory();
+            }, 30000);
+        });
+    </script>
+</body>
+</html>

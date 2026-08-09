@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🔍 Fake News Detector</h1>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="/about" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="hero-section">
+                <h2>Verify News Authenticity with AI</h2>
+                <p class="subtitle">Use advanced Machine Learning and NLP to detect fake news instantly</p>
+            </div>
+
+            <div class="detection-card">
+                <h3>Enter News Article to Analyze</h3>
+                
+                <!-- Text Analysis Form -->
+                <div id="textAnalysisSection">
+                <form id="predictionForm">
+                    <textarea 
+                        id="newsText" 
+                        name="text" 
+                        rows="10" 
+                        placeholder="Paste or type the news article you want to verify here...
+                        
+Example: 'Scientists discover eating chocolate cures all diseases instantly'
+
+Minimum 10 characters required."
+                        required
+                    ></textarea>
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                            <span id="btnText">Analyze News</span>
+                            <span id="btnLoader" class="loader" style="display: none;"></span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="clearBtn">Clear</button>
+                    </div>
+                </form>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div id="resultCard" class="result-card">
+                        <div class="result-header">
+                            <h3>Analysis Result</h3>
+                        </div>
+                        <div class="result-body">
+                            <div class="result-badge" id="resultBadge">
+                                <span id="resultLabel"></span>
+                            </div>
+                            <div class="result-details">
+                                <p id="resultMessage"></p>
+                                <div class="confidence-bar">
+                                    <label>Confidence Level:</label>
+                                    <div class="progress-bar">
+                                        <div id="confidenceProgress" class="progress-fill"></div>
+                                    </div>
+                                    <span id="confidenceText" class="confidence-text"></span>
+                                </div>
+                            </div>
+                            <div class="export-buttons" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
+                                <button id="exportPdfBtn" class="export-btn pdf-btn">
+                                    <span>📄</span> Export to PDF
+                                </button>
+                                <button id="exportExcelBtn" class="export-btn excel-btn">
+                                    <span>📊</span> Export to Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="errorSection" class="error-section" style="display: none;">
+                    <div class="error-card">
+                        <span class="error-icon">⚠️</span>
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">🤖</div>
+                        <h4>Machine Learning</h4>
+                        <p>Powered by Logistic Regression, Naive Bayes, and SVM algorithms</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">📊</div>
+                        <h4>NLP Processing</h4>
+                        <p>Advanced text preprocessing and TF-IDF vectorization</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">⚡</div>
+                        <h4>Instant Results</h4>
+                        <p>Get real-time predictions with confidence scores</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">✅</div>
+                        <h4>Reliable</h4>
+                        <p>Trained on diverse datasets for accurate detection</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shortcuts-section">
+                <h3 style="text-align: center; color: white; margin-bottom: 1.5rem; font-size: 1.5rem;">⌨️ Keyboard Shortcuts</h3>
+                <div class="shortcuts-grid">
+                    <div class="shortcut-card">
+                        <div class="shortcut-keys">
+                            <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd>
+                        </div>
+                        <p>Load Fake News Sample</p>
+                    </div>
+                    <div class="shortcut-card">
+                        <div class="shortcut-keys">
+                            <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>
+                        </div>
+                        <p>Load Real News Sample</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard Section -->
+            <div class="admin-dashboard-section" style="margin-top: 4rem;">
+                <h2 style="text-align: center; color: white; margin-bottom: 2rem; font-size: 2.5rem;">
+                    📊 Prediction Statistics Dashboard
+                </h2>
+
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Predictions</div>
+                        <div class="stat-value" id="totalPredictions">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Fake News Detected</div>
+                        <div class="stat-value" id="fakeCount" style="color: #ef4444;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Real News Detected</div>
+                        <div class="stat-value" id="realCount" style="color: #10b981;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Average Confidence</div>
+                        <div class="stat-value" id="avgConfidence">-</div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <div class="section-header">
+                        <h2>📋 Recent Predictions History</h2>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                            <!-- Filter Controls -->
+                            <select id="filterPrediction" class="filter-select" onchange="filterHistory()">
+                                <option value="all">All Predictions</option>
+                                <option value="FAKE">Fake Only</option>
+                                <option value="REAL">Real Only</option>
+                            </select>
+                            
+                            <button class="admin-export-btn" onclick="clearAllHistory()" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                                🗑️ Clear History
+                            </button>
+                            
+                            <button class="admin-export-btn" onclick="exportAllDataPDF()" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+                                📄 Export to PDF
+                            </button>
+                            <button class="admin-export-btn" onclick="exportAllData()">
+                                📥 Export to CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Text Preview</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                    <th>Timestamp</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">
+                                        Loading data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls" style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+                        <button class="admin-export-btn" onclick="previousPage()" id="prevBtn" style="background: linear-gradient(135deg, #6366f1, #818cf8);">
+                            ← Previous
+                        </button>
+                        <span id="pageInfo" style="color: #1e293b; font-weight: 600;">Page 1</span>
+                        <button class="admin-export-btn" onclick="nextPage()" id="nextBtn" style="background: linear-gradient(135deg, #6366f1, #818cf8);">
+                            Next →
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal for viewing full text -->
+                <div id="textModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>📄 Full Article Text</h3>
+                            <button class="modal-close" onclick="closeModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="modalPrediction" class="modal-prediction-badge"></div>
+                            <p id="modalText" style="white-space: pre-wrap; line-height: 1.8; color: #1e293b;"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="admin-export-btn" onclick="closeModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Fake News Detection System. Built with Python, Flask, and Machine Learning.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}?v={{ range(1, 10000) | random }}"></script>
+</body>
+</html>

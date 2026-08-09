@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Fake News Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🔍 Fake News Detector</h1>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link active">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="about-section">
+                <h2>About This Project</h2>
+                
+                <div class="about-card">
+                    <h3>🎯 Project Overview</h3>
+                    <p>
+                        In today's digital era, the rapid growth of social media and online news platforms has made it easier 
+                        to spread misinformation and fake news. This Fake News Detection System uses advanced Machine Learning 
+                        and Natural Language Processing (NLP) techniques to automatically identify whether a given news article 
+                        is genuine or fake.
+                    </p>
+                </div>
+
+                <div class="about-card">
+                    <h3>🔬 How It Works</h3>
+                    <ol class="process-list">
+                        <li>
+                            <strong>Data Collection:</strong> News data is collected from both reliable and unreliable sources 
+                            to create a diverse training dataset.
+                        </li>
+                        <li>
+                            <strong>Text Preprocessing:</strong> The system removes stop words, performs tokenization, and 
+                            applies lemmatization to clean and normalize the text.
+                        </li>
+                        <li>
+                            <strong>Feature Extraction:</strong> Text is converted into numerical features using TF-IDF 
+                            (Term Frequency-Inverse Document Frequency) vectorization with n-grams.
+                        </li>
+                        <li>
+                            <strong>Model Training:</strong> Multiple supervised learning algorithms are trained and compared:
+                            <ul>
+                                <li>Logistic Regression</li>
+                                <li>Naive Bayes (Multinomial)</li>
+                                <li>Support Vector Machine (SVM)</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Prediction:</strong> The best-performing model analyzes linguistic and contextual patterns 
+                            to classify news articles as real or fake with a confidence score.
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="about-card">
+                    <h3>💻 Technology Stack</h3>
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <strong>Backend:</strong> Python, Flask,SQL Lite
+                        </div>
+                        <div class="tech-item">
+                            <strong>ML Libraries:</strong> Scikit-learn, NLTK
+                        </div>
+                        <div class="tech-item">
+                            <strong>NLP:</strong> TF-IDF, Tokenization, Lemmatization
+                        </div>
+                        <div class="tech-item">
+                            <strong>Frontend:</strong> HTML, CSS, JavaScript
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-card">
+                    <h3>🎓 Educational Purpose</h3>
+                    <p>
+                        This is a mini-project designed to demonstrate the application of Machine Learning and NLP in 
+                        combating misinformation. It serves as an educational tool to understand:
+                    </p>
+                    <ul>
+                        <li>Text preprocessing and feature engineering</li>
+                        <li>Supervised learning classification algorithms</li>
+                        <li>Model comparison and evaluation metrics</li>
+                        <li>Building ML-powered web applications</li>
+                        <li>Real-world applications of AI in social good</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <h3>⚠️ Disclaimer</h3>
+                    <p class="disclaimer">
+                        While this system uses advanced machine learning techniques, it should not be the sole source for 
+                        verifying news authenticity. Always cross-reference with multiple reliable sources and use critical 
+                        thinking when evaluating news content. This tool is designed as an educational project and a 
+                        supplementary verification aid.
+                    </p>
+                </div>
+
+                <div class="about-card">
+                    <h3>🚀 Future Enhancements</h3>
+                    <ul>
+                        <li>Integration with real-time news APIs</li>
+                        <li>Deep learning models (LSTM, BERT, Transformers)</li>
+                        <li>Multi-language support</li>
+                        <li>Source credibility analysis</li>
+                        <li>Fact-checking database integration</li>
+                        <li>Browser extension for on-the-fly verification</li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <a href="/" class="btn btn-primary">Try the Detector</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Fake News Detection System. Built with Python, Flask, and Machine Learning.</p>
+        </div>
+    </footer>
+</body>
+</html>
